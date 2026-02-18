@@ -1,4 +1,5 @@
 import NextAuth from "next-auth"
+import { useHtmlContext } from "next/dist/shared/lib/html-context.shared-runtime"
 
 const handler = NextAuth({
   providers: [
@@ -16,6 +17,12 @@ const handler = NextAuth({
           const { provider, params } = context
           const { code } = params
           
+          console.log("Token Request Debug:", {
+            callbackUrl: provider.callbackUrl,
+            code: code ? "present" : "missing",
+            clientId: provider.clientId
+          })
+
           const tokens = await fetch("https://auth.hackclub.com/oauth/token", {
             method: "POST",
             headers: {
@@ -29,7 +36,11 @@ const handler = NextAuth({
               grant_type: "authorization_code",
               redirect_uri: provider.callbackUrl,
             }),
-          }).then(res => res.json())
+          }).then(async res => {
+            const data = await res.json()
+            console.log("Token Response:", JSON.stringify(data, null, 2))
+            return data
+          })
 
           if (tokens.error) {
             console.error("Hack Club Token Error:", tokens)
@@ -80,4 +91,6 @@ const handler = NextAuth({
 })
 
 export { handler as GET, handler as POST }
+
+
 

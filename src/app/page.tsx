@@ -14,9 +14,7 @@ function LandingPage() {
       <main>
         <h1>Hackfolio</h1>
         <p>a linkinbio for Hack Clubbers!</p>
-        {status === "loading" ? (
-          <p>Loading...</p>
-        ) : session ? (
+        {session ? (
           <div>
             <p>Signed in</p>
             <button onClick={() => signOut()}>Sign out</button>
