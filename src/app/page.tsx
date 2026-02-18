@@ -2,19 +2,35 @@
 
 import React from 'react';
 import { NavigationMenuItem } from '@/components/ui/navigation-menu';
-import { signIn } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 
 function LandingPage() {
+  const { data: session, status } = useSession();
+
   return (
     <div>
       <NavigationMenuItem />
       <main>
         <h1>Hackfolio</h1>
         <p>a linkinbio for Hack Clubbers!</p>
-        <button onClick={() => signIn()}>Login with Hack Club Auth</button>
+        {status === "loading" ? (
+          <p>Loading...</p>
+        ) : session ? (
+          <div>
+            <p>Signed in</p>
+            <button onClick={() => signOut()}>Sign out</button>
+          </div>
+        ) : (
+          <div>
+            <p>Signed out</p>
+            <button onClick={() => signIn("hackclub")}>Login with Hack Club Auth</button>
+          </div>
+        )}
       </main>
     </div>
   );
 }
+
 export default LandingPage;
+
